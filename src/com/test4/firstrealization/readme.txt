@@ -1,0 +1,1 @@
+通过 synchronized、wait()、notifyAll()实现了生产者消费者
