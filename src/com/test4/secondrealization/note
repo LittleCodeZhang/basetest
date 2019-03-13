@@ -1,0 +1,29 @@
+Lock的特性：
+    （1）synchronized是jvm层面上实现的，在出现异常的时候jvm会自动释放锁，Lock不是java语言内置的，
+        所以一定要手动释放锁（在finally块里释放）。
+    （2）在竞争不严重的情况下，synchronized的效率会高于Lock，但是在竞争激烈的情况下Lock的效率会远
+        远高于synchronized
+    （3）ReentrantLock增加了锁：
+        1）无条件的锁
+            public void lock() {
+                  sync.lock();
+              }
+        2）可中断的锁:线程获得锁就立即返回，没获得就等待或者被其他线程中断等待过程去做其他事情
+            public void lockInterruptibly() throws InterruptedException {
+                    sync.acquireInterruptibly(1);
+            }
+        3)如果获得锁就立即返回true，没获得之间返回false；
+            public boolean tryLock() {
+                return sync.nonfairTryAcquire(1);
+            }
+        4)如果线程获取锁立即返回true，如果是其他线程获取锁，则等待相应的超时时间，在期间获得锁则返
+          回true，如果到达查实时间没有获得则返回false
+            public boolean tryLock(long timeout, TimeUnit unit)
+                      throws InterruptedException {
+                  return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+             }
+Condition特性：
+    （1）Condition中的方法await()、signal()、signalAll()，相对应的是Object的方法wait()、notify()
+        notifyAll()。不同的是，Object的方法与同步锁一起使用，Condition的方法与互斥锁或共享锁一起使用。
+    （2）Condition的唤醒比较精准，例如例子中的，当生产者生产了资源的时候就可以精准的唤醒消费者进行消费，
+        但是，使用Object的方法只能通过唤醒所有进程来唤醒消费者进行消费。
